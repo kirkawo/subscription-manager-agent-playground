@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.Extensions.Logging;
 using SubscriptionManager.Entities;
 using SubscriptionManager.Exceptions;
 using SubscriptionManager.Interfaces;
@@ -13,15 +14,18 @@ public class SubscriptionService : ISubscriptionService
 {
     private readonly ISubscriptionRepository _repository;
     private readonly IMapper _mapper;
+    private readonly ILogger<SubscriptionService> _logger;
 
-    public SubscriptionService(ISubscriptionRepository repository, IMapper mapper)
+public SubscriptionService(ISubscriptionRepository repository, IMapper mapper, ILogger<SubscriptionService> logger = null)
     {
         _repository = repository;
         _mapper = mapper;
+        _logger = logger;
     }
 
     public async Task<IEnumerable<SubscriptionViewModel>> GetAllSubscriptionsAsync()
     {
+        _logger?.LogInformation("Fetching all subscriptions");
         var entities = await _repository.GetAllAsync();
         return _mapper.Map<IEnumerable<SubscriptionViewModel>>(entities);
     }
@@ -29,7 +33,11 @@ public class SubscriptionService : ISubscriptionService
     public async Task<SubscriptionViewModel?> GetSubscriptionByIdAsync(int id)
     {
         var entity = await _repository.GetByIdAsync(id);
-        if (entity == null) return null;
+        if (entity == null)
+        {
+        _logger?.LogWarning("Subscription with ID {Id} not found", id);
+            return null;
+        }
         return _mapper.Map<SubscriptionViewModel>(entity);
     }
 
@@ -37,6 +45,7 @@ public class SubscriptionService : ISubscriptionService
     {
         var entity = _mapper.Map<Subscription>(dto);
         var created = await _repository.CreateAsync(entity);
+        _logger?.LogInformation("Creating new subscription with ID {Id}", created.Id);
         return _mapper.Map<SubscriptionViewModel>(created);
     }
 
@@ -44,9 +53,12 @@ public class SubscriptionService : ISubscriptionService
     {
         var existing = await _repository.GetByIdAsync(id);
         if (existing == null)
+        {
             throw new NotFoundException($"Subscription with ID {id} not found.");
+        }
         _mapper.Map(dto, existing);
         await _repository.UpdateAsync(existing);
+        _logger?.LogInformation("Subscription {Id} updated successfully", id);
         return _mapper.Map<SubscriptionViewModel>(existing);
     }
 
@@ -54,7 +66,10 @@ public class SubscriptionService : ISubscriptionService
     {
         var existing = await _repository.GetByIdAsync(id);
         if (existing == null)
+        {
             throw new NotFoundException($"Subscription with ID {id} not found.");
+        }
+        _logger?.LogInformation("Subscription {Id} deleted", id);
         await _repository.DeleteAsync(id);
     }
 }
