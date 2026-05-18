@@ -9,9 +9,13 @@ using SubscriptionManager.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure logging to console
+builder.Logging.AddConsole();
+
 // Add services to the container.
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite("Data Source=subscription.db"));
+    options.UseSqlite("Data Source=subscription.db")
+           .LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information));
 
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
