@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SubscriptionManager/SubscriptionManager.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SubscriptionManager.Tests/SubscriptionManager.Tests.csproj" />
+  </Folder>
+</Solution>
