@@ -6,7 +6,6 @@ using SubscriptionManager.Models.DTOs;
 using SubscriptionManager.Repositories;
 using SubscriptionManager.Services;
 using SubscriptionManager.Validators;
-using SubscriptionManager.Middleware;
 using SubscriptionManager.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,8 +15,27 @@ builder.Logging.AddConsole();
 
 // Add services to the container.
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite("Data Source=subscription.db")
-           .LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information));
+{
+    var provider = builder.Configuration.GetValue<string>("DatabaseProvider", "SqlServer");
+
+    switch (provider)
+    {
+        case "SqlServer":
+            var sqlServerConnection = builder.Configuration.GetConnectionString("SqlServer")
+                ?? throw new InvalidOperationException("Connection string 'SqlServer' was not found.");
+            options.UseSqlServer(sqlServerConnection);
+            break;
+
+        case "Sqlite":
+        default:
+            var sqliteConnection = builder.Configuration.GetConnectionString("Sqlite")
+                ?? "Data Source=subscription.db";
+            options.UseSqlite(sqliteConnection);
+            break;
+    }
+
+    options.LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information);
+});
 
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
@@ -33,11 +51,11 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Ensure database is created on first run
+// Initialize database using migrations
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.EnsureCreated();
+    db.Database.Migrate();
 }
 
 if (app.Environment.IsDevelopment())
