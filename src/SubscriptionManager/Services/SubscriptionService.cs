@@ -16,7 +16,7 @@ public class SubscriptionService : ISubscriptionService
     private readonly IMapper _mapper;
     private readonly ILogger<SubscriptionService> _logger;
 
-public SubscriptionService(ISubscriptionRepository repository, IMapper mapper, ILogger<SubscriptionService> logger = null)
+public SubscriptionService(ISubscriptionRepository repository, IMapper mapper, ILogger<SubscriptionService> logger)
     {
         _repository = repository;
         _mapper = mapper;
