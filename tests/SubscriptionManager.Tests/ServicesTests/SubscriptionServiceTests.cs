@@ -3,12 +3,11 @@ using Moq;
 using SubscriptionManager.Entities;
 using SubscriptionManager.Exceptions;
 using SubscriptionManager.Interfaces;
-using SubscriptionManager.Models.DTOs;
-using SubscriptionManager.Models.ViewModels;
 using SubscriptionManager.Profiles;
 using SubscriptionManager.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 
-namespace SubscriptionManager.Tests;
+namespace SubscriptionManager.Tests.ServicesTests;
 
 public class SubscriptionServiceTests
 {
@@ -21,7 +20,7 @@ public class SubscriptionServiceTests
         var config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
         _mapper = config.CreateMapper();
         _repositoryMock = new Mock<ISubscriptionRepository>();
-        _service = new SubscriptionService(_repositoryMock.Object, _mapper);
+_service = new SubscriptionService(_repositoryMock.Object, _mapper, NullLogger<SubscriptionService>.Instance);
     }
 
     [Fact]
@@ -76,7 +75,7 @@ public class CustomerServiceTests
         var config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
         _mapper = config.CreateMapper();
         _repositoryMock = new Mock<ICustomerRepository>();
-        _service = new CustomerService(_repositoryMock.Object, _mapper);
+_service = new CustomerService(_repositoryMock.Object, _mapper, NullLogger<CustomerService>.Instance);
     }
 
     [Fact]
