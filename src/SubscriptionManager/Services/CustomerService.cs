@@ -16,7 +16,7 @@ namespace SubscriptionManager.Services
         private readonly IMapper _mapper;
         private readonly ILogger<CustomerService> _logger;
 
-public CustomerService(ICustomerRepository repository, IMapper mapper, ILogger<CustomerService> logger = null)
+public CustomerService(ICustomerRepository repository, IMapper mapper, ILogger<CustomerService> logger)
         {
             _repository = repository;
             _mapper = mapper;
