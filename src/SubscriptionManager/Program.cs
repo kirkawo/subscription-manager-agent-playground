@@ -6,6 +6,8 @@ using SubscriptionManager.Models.DTOs;
 using SubscriptionManager.Repositories;
 using SubscriptionManager.Services;
 using SubscriptionManager.Validators;
+using SubscriptionManager.Middleware;
+using SubscriptionManager.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,14 +48,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseExceptionHandler(errorApp =>
-{
-    errorApp.Run(async context =>
-    {
-        context.Response.StatusCode = 500;
-        await context.Response.WriteAsync("An unexpected error occurred.");
-    });
-});
+app.UseGlobalExceptionHandler();
 
 // Customer endpoints
 app.MapGet("/customers", async (ICustomerService svc) => await svc.GetAllCustomersAsync());
