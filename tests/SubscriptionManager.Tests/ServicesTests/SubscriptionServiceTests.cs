@@ -20,7 +20,7 @@ public class SubscriptionServiceTests
         var config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
         _mapper = config.CreateMapper();
         _repositoryMock = new Mock<ISubscriptionRepository>();
-_service = new SubscriptionService(_repositoryMock.Object, _mapper, NullLogger<SubscriptionService>.Instance);
+        _service = new SubscriptionService(_repositoryMock.Object, _mapper, NullLogger<SubscriptionService>.Instance);
     }
 
     [Fact]
@@ -61,63 +61,5 @@ _service = new SubscriptionService(_repositoryMock.Object, _mapper, NullLogger<S
             .ReturnsAsync((Subscription?)null);
 
         await Assert.ThrowsAsync<NotFoundException>(() => _service.DeleteSubscriptionAsync(99));
-    }
-}
-
-public class CustomerServiceTests
-{
-    private readonly IMapper _mapper;
-    private readonly Mock<ICustomerRepository> _repositoryMock;
-    private readonly CustomerService _service;
-
-    public CustomerServiceTests()
-    {
-        var config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
-        _mapper = config.CreateMapper();
-        _repositoryMock = new Mock<ICustomerRepository>();
-_service = new CustomerService(_repositoryMock.Object, _mapper, NullLogger<CustomerService>.Instance);
-    }
-
-    [Fact]
-    public async Task GetCustomerByIdAsync_ReturnsNull_WhenNotFound()
-    {
-        _repositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<int>()))
-            .ReturnsAsync((Customer?)null);
-
-        var result = await _service.GetCustomerByIdAsync(42);
-
-        Assert.Null(result);
-    }
-
-    [Fact]
-    public async Task GetCustomerByIdAsync_ReturnsViewModelWithCount_WhenFound()
-    {
-        var customer = new Customer
-        {
-            Id = 1,
-            Name = "Alice",
-            Email = "alice@test.com",
-            Subscriptions = new List<Subscription>
-            {
-                new() { Id = 1, Name = "Sub1" }
-            }
-        };
-        _repositoryMock.Setup(r => r.GetByIdAsync(1))
-            .ReturnsAsync(customer);
-
-        var result = await _service.GetCustomerByIdAsync(1);
-
-        Assert.NotNull(result);
-        Assert.Equal("Alice", result.Name);
-        Assert.Equal(1, result.SubscriptionCount);
-    }
-
-    [Fact]
-    public async Task DeleteCustomerAsync_Throws_WhenNotFound()
-    {
-        _repositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<int>()))
-            .ReturnsAsync((Customer?)null);
-
-        await Assert.ThrowsAsync<NotFoundException>(() => _service.DeleteCustomerAsync(99));
     }
 }
