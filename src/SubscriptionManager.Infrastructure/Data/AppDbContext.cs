@@ -26,6 +26,10 @@ namespace SubscriptionManager.Infrastructure.Data
             modelBuilder.Entity<Subscription>()
                 .HasIndex(s => new { s.CustomerId, s.Name })
                 .IsUnique();
+
+            modelBuilder.Entity<Subscription>()
+                .Property(s => s.Price)
+                .HasPrecision(18, 2);
         }
     }
 }

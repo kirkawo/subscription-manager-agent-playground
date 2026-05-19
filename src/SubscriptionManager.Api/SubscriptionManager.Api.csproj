@@ -28,6 +28,8 @@
   <ItemGroup>
     <ProjectReference Include="..\SubscriptionManager.Application\SubscriptionManager.Application.csproj" />
     <ProjectReference Include="..\SubscriptionManager.Infrastructure\SubscriptionManager.Infrastructure.csproj" />
+    <ProjectReference Include="..\SubscriptionManager.Migrations.Sqlite\SubscriptionManager.Migrations.Sqlite.csproj" />
+    <ProjectReference Include="..\SubscriptionManager.Migrations.SqlServer\SubscriptionManager.Migrations.SqlServer.csproj" />
   </ItemGroup>
 
 </Project>

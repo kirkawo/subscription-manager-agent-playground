@@ -4,6 +4,8 @@
     <Project Path="src/SubscriptionManager.Domain/SubscriptionManager.Domain.csproj" />
     <Project Path="src/SubscriptionManager.Application/SubscriptionManager.Application.csproj" />
     <Project Path="src/SubscriptionManager.Infrastructure/SubscriptionManager.Infrastructure.csproj" />
+    <Project Path="src/SubscriptionManager.Migrations.Sqlite/SubscriptionManager.Migrations.Sqlite.csproj" />
+    <Project Path="src/SubscriptionManager.Migrations.SqlServer/SubscriptionManager.Migrations.SqlServer.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/SubscriptionManager.Tests/SubscriptionManager.Tests.csproj" />

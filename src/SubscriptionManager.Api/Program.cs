@@ -23,14 +23,16 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         case "SqlServer":
             var sqlServerConnection = builder.Configuration.GetConnectionString("SqlServer")
                 ?? throw new InvalidOperationException("Connection string 'SqlServer' was not found.");
-            options.UseSqlServer(sqlServerConnection);
+            options.UseSqlServer(sqlServerConnection,
+                b => b.MigrationsAssembly("SubscriptionManager.Migrations.SqlServer"));
             break;
 
         case "Sqlite":
         default:
             var sqliteConnection = builder.Configuration.GetConnectionString("Sqlite")
                 ?? "Data Source=subscription.db";
-            options.UseSqlite(sqliteConnection);
+            options.UseSqlite(sqliteConnection,
+                b => b.MigrationsAssembly("SubscriptionManager.Migrations.Sqlite"));
             break;
     }
 
