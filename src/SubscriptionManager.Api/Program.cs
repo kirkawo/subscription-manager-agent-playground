@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SubscriptionManager.Api.Extensions;
 using SubscriptionManager.Application.Interfaces;
 using SubscriptionManager.Application.Models.DTOs;
+using SubscriptionManager.Application.Profiles;
 using SubscriptionManager.Application.Services;
 using SubscriptionManager.Application.Validators;
 using SubscriptionManager.Infrastructure.Data;
@@ -44,7 +45,7 @@ builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 
-builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(typeof(Program), typeof(MappingProfile));
 
 builder.Services.AddValidatorsFromAssemblyContaining<CustomerDtoValidator>();
 
