@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using Moq;
-using SubscriptionManager.Entities;
-using SubscriptionManager.Exceptions;
-using SubscriptionManager.Interfaces;
-using SubscriptionManager.Models.DTOs;
-using SubscriptionManager.Profiles;
-using SubscriptionManager.Services;
+using SubscriptionManager.Domain.Entities;
+using SubscriptionManager.Application.Exceptions;
+using SubscriptionManager.Application.Interfaces;
+using SubscriptionManager.Application.Models.DTOs;
+using SubscriptionManager.Application.Profiles;
+using SubscriptionManager.Application.Services;
 using Microsoft.Extensions.Logging.Abstractions;
-using System.Collections.Generic;
 
 namespace SubscriptionManager.Tests.ServicesTests;
 
