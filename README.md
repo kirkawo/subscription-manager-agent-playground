@@ -44,8 +44,8 @@ tests/SubscriptionManager.Tests/ # Unit tests (xUnit + Moq)
 ## Getting Started
 
 ```bash
-# Run the API
-dotnet run --project src/SubscriptionManager
+# Run the API (locally)
+dotnet run --project src/SubscriptionManager.Api
 
 # Run tests
 dotnet test
@@ -53,7 +53,22 @@ dotnet test
 
 Swagger UI is available at `https://localhost:{port}/swagger` when running in Development mode.
 
+### Docker
+
+```bash
+# Build and start the API container
+docker compose up --build
+
+# Stop and remove the container
+docker compose down
+```
+
+The API is available at `http://localhost:5022` and Swagger at `http://localhost:5022/swagger`.
+
+SQLite data is persisted in a named Docker volume (`subscription-data`) mapped to `/app/Data` inside the container.
+
 ## Notes
 
-- SQLite database is created automatically on first run (`subscription.db`).
+- SQLite database is created automatically on first run (`subscription.db`), stored in a `Data/` directory.
+- `DatabaseProvider` is set to `Sqlite` by default — override via the `DatabaseProvider` env var.
 - Project is intentionally kept simple — the focus is on agent testability, not production readiness.

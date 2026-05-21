@@ -1,0 +1,17 @@
+services:
+  subscription-manager-api:
+    build:
+      context: .
+      dockerfile: src/SubscriptionManager.Api/Dockerfile
+    ports:
+      - "5022:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - DatabaseProvider=Sqlite
+      - ConnectionStrings__Sqlite=Data Source=subscription.db
+    volumes:
+      - subscription-data:/app/Data
+
+volumes:
+  subscription-data:
