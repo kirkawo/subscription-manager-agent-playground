@@ -8,6 +8,7 @@ using SubscriptionManager.Application.Services;
 using SubscriptionManager.Application.Validators;
 using SubscriptionManager.Infrastructure.Data;
 using SubscriptionManager.Infrastructure.Repositories;
+using Microsoft.Data.Sqlite;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,24 +18,46 @@ builder.Logging.AddConsole();
 // Add services to the container.
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    var provider = builder.Configuration.GetValue<string>("DatabaseProvider", "SqlServer");
+    var provider = builder.Configuration.GetValue<string>("DatabaseProvider", "Sqlite");
 
     switch (provider)
     {
         case "SqlServer":
-            var sqlServerConnection = builder.Configuration.GetConnectionString("SqlServer")
-                ?? throw new InvalidOperationException("Connection string 'SqlServer' was not found.");
-            options.UseSqlServer(sqlServerConnection,
-                b => b.MigrationsAssembly("SubscriptionManager.Migrations.SqlServer"));
-            break;
+            {
+                var sqlServerConnection = builder.Configuration.GetConnectionString("SqlServer")
+                    ?? throw new InvalidOperationException("Connection string 'SqlServer' was not found.");
+
+                options.UseSqlServer(
+                    sqlServerConnection,
+                    b => b.MigrationsAssembly("SubscriptionManager.Migrations.SqlServer"));
+
+                break;
+            }
 
         case "Sqlite":
         default:
-            var sqliteConnection = builder.Configuration.GetConnectionString("Sqlite")
-                ?? "Data Source=subscription.db";
-            options.UseSqlite(sqliteConnection,
-                b => b.MigrationsAssembly("SubscriptionManager.Migrations.Sqlite"));
-            break;
+            {
+                var sqliteConnection = builder.Configuration.GetConnectionString("Sqlite")
+                    ?? "Data Source=subscription.db";
+
+                var sqliteBuilder = new SqliteConnectionStringBuilder(sqliteConnection);
+
+                var fileName = string.IsNullOrWhiteSpace(sqliteBuilder.DataSource)
+                    ? "subscription.db"
+                    : Path.GetFileName(sqliteBuilder.DataSource);
+
+                var dataDirectory = Path.Combine(builder.Environment.ContentRootPath, "Data");
+                Directory.CreateDirectory(dataDirectory);
+
+                var dbPath = Path.Combine(dataDirectory, fileName);
+                sqliteBuilder.DataSource = dbPath;
+
+                options.UseSqlite(
+                    sqliteBuilder.ToString(),
+                    b => b.MigrationsAssembly("SubscriptionManager.Migrations.Sqlite"));
+
+                break;
+            }
     }
 
     options.LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information);
